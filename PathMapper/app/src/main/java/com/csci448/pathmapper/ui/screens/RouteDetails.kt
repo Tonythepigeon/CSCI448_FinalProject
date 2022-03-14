@@ -1,7 +1,10 @@
 package com.csci448.pathmapper.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -17,45 +20,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
 import com.csci448.pathmapper.R
 
-val FONT_SIZE = 18.sp
 
-
-@Composable
-fun Title(stringIn: String){
-    Text(stringIn, color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-}
-@Composable
-fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
-    Button(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = enabled,
-        onClick = onClick
-    ){
-        Text(text, textAlign = TextAlign.Center)
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewCharacterDetailScreen(){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
-        Title(stringResource(R.string.begin_route_page_label))
+        Title("*Route name*")
         Spacer(modifier = Modifier.height(16.dp))
-        val nameIn = stringResource(R.string.name_label)
-        var text by rememberSaveable { mutableStateOf(nameIn) }
-        TextField(
-            value = "",
-            onValueChange = { text = it },
-            label = { Text(stringResource(R.string.name_label), fontSize = FONT_SIZE) }
-        )
+        Text("*Interactive map", fontSize = 48.sp)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.battery_label), fontSize = FONT_SIZE)
+        Text(stringResource(R.string.info_label), textAlign = TextAlign.Center, fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.color_label), fontSize = FONT_SIZE)
+        Row() {
+            Text(stringResource(R.string.date_label),
+                Modifier.weight(0.5F), textAlign = TextAlign.Start, fontSize = FONT_SIZE)
+            Text(stringResource(R.string.time_label),
+                Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
+        }
         Spacer(modifier = Modifier.height(16.dp))
-        NewButton(stringResource(R.string.start_button_label, true)) {}
+        Row() {
+            Text(stringResource(R.string.length_label),
+                Modifier.weight(0.5F), textAlign = TextAlign.Start, fontSize = FONT_SIZE)
+            Text(stringResource(R.string.average_speed_label),
+                Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
+        }
     }
 }

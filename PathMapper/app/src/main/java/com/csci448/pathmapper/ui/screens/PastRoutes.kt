@@ -1,7 +1,10 @@
 package com.csci448.pathmapper.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -17,24 +20,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
 import com.csci448.pathmapper.R
 
-val FONT_SIZE = 18.sp
 
 
 @Composable
-fun Title(stringIn: String){
-    Text(stringIn, color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-}
-@Composable
-fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
-    Button(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = enabled,
-        onClick = onClick
+private fun RouteRow(routeID: String, onSelectRoute: (route: String) -> Unit){
+    Card(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+            .clickable { onSelectRoute(routeID) }
+
     ){
-        Text(text, textAlign = TextAlign.Center)
+        Row{
+            Text(routeID)
+            //...More stuff to include
+        }
+    }
+}
+
+@Composable
+fun PastRoutesList(routeList: List<String>?, onSelectRoute: (route: String) -> Unit){
+    if(routeList != null){
+        LazyColumn{
+            items(routeList){ route -> RouteRow(route, onSelectRoute)}
+        }
     }
 }
 
@@ -42,20 +54,20 @@ fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
 @Composable
 private fun PreviewCharacterDetailScreen(){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
-        Title(stringResource(R.string.begin_route_page_label))
+        Title(stringResource(R.string.past_routes_page_label))
         Spacer(modifier = Modifier.height(16.dp))
-        val nameIn = stringResource(R.string.name_label)
+        val nameIn = stringResource(R.string.search_box_label)
         var text by rememberSaveable { mutableStateOf(nameIn) }
         TextField(
             value = "",
             onValueChange = { text = it },
-            label = { Text(stringResource(R.string.name_label), fontSize = FONT_SIZE) }
+            label = { Text(stringResource(R.string.search_box_label), fontSize = FONT_SIZE) }
         )
+        NewButton(stringResource(R.string.search_box_label, true)) {}
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.battery_label), fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.color_label), fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
-        NewButton(stringResource(R.string.start_button_label, true)) {}
     }
 }
