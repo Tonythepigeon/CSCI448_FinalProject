@@ -1,9 +1,8 @@
 package com.csci448.pathmapper.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.csci448.pathmapper.R
 
 val FONT_SIZE = 18.sp
@@ -37,11 +40,49 @@ fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
         Text(text, textAlign = TextAlign.Center)
     }
 }
+@Composable
+fun RadioGroup(
+    options: List<String>?,
+    selectedOption: String?,
+    onOptionSelected: (String) -> Unit) =
+    options?.forEach { item ->
+        Row(
+            Modifier.padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = (item == selectedOption),
+                onClick = {onOptionSelected(item) },
+            )
+            ClickableText(
+                text = AnnotatedString(item),
+                modifier = Modifier.padding(start = 4.dp),
+                style = TextStyle(fontSize = FONT_SIZE),
+                onClick = {
+                    onOptionSelected(item)
+                }
+            )
+        }
+    }
+@Composable
+fun ColorRadioGroup(
+    options: List<Color>?,
+    selectedOption: Color?,
+    onOptionSelected: (Color) -> Unit) =
+    Row (){
+        options?.forEach { item ->
+            RadioButton(
+                selected = (item == selectedOption),
+                onClick = { onOptionSelected(item) },
+                colors = RadioButtonDefaults.colors(selectedColor = item, unselectedColor = item)
+            )
+        }
+    }
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCharacterDetailScreen(){
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
+fun HomeScreen(){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.begin_route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
         val nameIn = stringResource(R.string.name_label)
@@ -54,7 +95,15 @@ private fun PreviewCharacterDetailScreen(){
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.battery_label), fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
+        RadioGroup(listOf(stringResource(R.string.battery_efficient_label),
+            stringResource(R.string.battery_moderate_label),
+            stringResource(R.string.battery_most_accurate_label)),
+            stringResource(R.string.battery_efficient_label)) { option -> print(option)}
+        Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.color_label), fontSize = FONT_SIZE)
+        Spacer(modifier = Modifier.height(16.dp))
+        ColorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red),
+            selectedOption = Color.Blue) {option -> print(option)}
         Spacer(modifier = Modifier.height(16.dp))
         NewButton(stringResource(R.string.start_button_label, true)) {}
     }

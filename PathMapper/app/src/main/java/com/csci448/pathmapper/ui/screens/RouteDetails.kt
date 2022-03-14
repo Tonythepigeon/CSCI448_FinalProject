@@ -28,8 +28,8 @@ import com.csci448.pathmapper.R
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCharacterDetailScreen(){
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
+private fun RouteDetailsScreen(){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title("*Route name*")
         Spacer(modifier = Modifier.height(16.dp))
         Text("*Interactive map", fontSize = 48.sp)

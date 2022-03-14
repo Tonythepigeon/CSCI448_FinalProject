@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.csci448.pathmapper.ui.screens.HomeScreen
 import com.csci448.pathmapper.ui.theme.PathMapperTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,7 +36,7 @@ fun MainActivityContent(){
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            //Possible functions
+            HomeScreen()
         }
     }
 }

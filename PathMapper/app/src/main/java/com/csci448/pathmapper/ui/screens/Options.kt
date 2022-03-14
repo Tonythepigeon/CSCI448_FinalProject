@@ -27,8 +27,8 @@ import com.csci448.pathmapper.R
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCharacterDetailScreen(){
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
+private fun OptionsScreen(){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.options_page_label))
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.advanced_color_label), fontSize = FONT_SIZE)

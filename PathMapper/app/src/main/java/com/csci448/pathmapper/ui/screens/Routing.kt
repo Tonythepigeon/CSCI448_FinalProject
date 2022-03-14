@@ -42,8 +42,8 @@ private fun RouteRow(routeID: String, onSelectRoute: (route: String) -> Unit){
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCharacterDetailScreen(){
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
+private fun RoutingScreen(){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
         NewButton(stringResource(R.string.route_options_button_label, true)) {}

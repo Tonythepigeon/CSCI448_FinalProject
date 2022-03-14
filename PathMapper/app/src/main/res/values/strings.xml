@@ -20,5 +20,8 @@
     <string name="time_label">Time:</string>
     <string name="length_label">Length:</string>
     <string name="average_speed_label">Average Speed:</string>
+    <string name="battery_efficient_label">Efficient</string>
+    <string name="battery_moderate_label">Moderate</string>
+    <string name="battery_most_accurate_label">Most Accurate</string>
 
 </resources>

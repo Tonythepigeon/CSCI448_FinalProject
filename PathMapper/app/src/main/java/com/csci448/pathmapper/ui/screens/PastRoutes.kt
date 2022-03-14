@@ -52,8 +52,8 @@ fun PastRoutesList(routeList: List<String>?, onSelectRoute: (route: String) -> U
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCharacterDetailScreen(){
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)){
+private fun PastRoutesScreen(){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.past_routes_page_label))
         Spacer(modifier = Modifier.height(16.dp))
         val nameIn = stringResource(R.string.search_box_label)
