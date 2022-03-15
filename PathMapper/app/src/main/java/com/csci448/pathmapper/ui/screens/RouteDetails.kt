@@ -22,13 +22,20 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.R
 
 
 
 @Preview(showBackground = true)
 @Composable
-private fun RouteDetailsScreen(){
+private fun PreviewRouteDetailsScreen(){
+    RouteDetailsScreen(navController = rememberNavController())
+}
+
+@Composable
+fun RouteDetailsScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title("*Route name*")
         Spacer(modifier = Modifier.height(16.dp))

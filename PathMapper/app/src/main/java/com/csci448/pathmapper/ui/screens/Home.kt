@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.R
 
 val FONT_SIZE = 18.sp
@@ -78,10 +80,13 @@ fun ColorRadioGroup(
             )
         }
     }
-
 @Preview(showBackground = true)
 @Composable
-fun HomeScreen(){
+private fun PreviewHomeScreen(){
+    HomeScreen(navController = rememberNavController())
+}
+@Composable
+fun HomeScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.begin_route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
@@ -105,6 +110,6 @@ fun HomeScreen(){
         ColorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red),
             selectedOption = Color.Blue) {option -> print(option)}
         Spacer(modifier = Modifier.height(16.dp))
-        NewButton(stringResource(R.string.start_button_label, true)) {}
+        NewButton(stringResource(R.string.start_button_label, true)) {navController.navigate("routing_screen")}
     }
 }

@@ -22,12 +22,19 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.R
 
 
 @Preview(showBackground = true)
 @Composable
-private fun OptionsScreen(){
+private fun PreviewOptionsScreen(){
+    OptionsScreen(navController = rememberNavController())
+}
+
+@Composable
+fun OptionsScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.options_page_label))
         Spacer(modifier = Modifier.height(16.dp))

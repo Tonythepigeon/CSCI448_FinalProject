@@ -10,6 +10,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.csci448.pathmapper.ui.navigation.PathMapperNavHost
 import com.csci448.pathmapper.ui.screens.HomeScreen
 import com.csci448.pathmapper.ui.theme.PathMapperTheme
 
@@ -36,7 +40,7 @@ fun MainActivityContent(){
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            HomeScreen()
+            PathMapperNavHost()
         }
     }
 }

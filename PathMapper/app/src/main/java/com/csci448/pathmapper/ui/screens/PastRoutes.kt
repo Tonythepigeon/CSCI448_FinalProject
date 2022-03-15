@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.R
 
 
@@ -52,7 +54,12 @@ fun PastRoutesList(routeList: List<String>?, onSelectRoute: (route: String) -> U
 
 @Preview(showBackground = true)
 @Composable
-private fun PastRoutesScreen(){
+private fun PreviewPastRoutesScreen(){
+    PastRoutesScreen(navController = rememberNavController())
+}
+
+@Composable
+fun PastRoutesScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.past_routes_page_label))
         Spacer(modifier = Modifier.height(16.dp))
@@ -65,9 +72,6 @@ private fun PastRoutesScreen(){
         )
         NewButton(stringResource(R.string.search_box_label, true)) {}
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.battery_label), fontSize = FONT_SIZE)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.color_label), fontSize = FONT_SIZE)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text("*List of Past Routes")
     }
 }

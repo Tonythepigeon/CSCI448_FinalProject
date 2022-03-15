@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.R
 
 
@@ -42,11 +44,16 @@ private fun RouteRow(routeID: String, onSelectRoute: (route: String) -> Unit){
 
 @Preview(showBackground = true)
 @Composable
-private fun RoutingScreen(){
+private fun PreviewRoutingScreen(){
+    RoutingScreen(navController = rememberNavController())
+}
+
+@Composable
+fun RoutingScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
-        NewButton(stringResource(R.string.route_options_button_label, true)) {}
+        NewButton(stringResource(R.string.route_options_button_label, true)) {navController.navigate("options_screen")}
         Spacer(modifier = Modifier.height(16.dp))
         NewButton(stringResource(R.string.map_label, true)) {}
         Spacer(modifier = Modifier.height(16.dp))
@@ -63,7 +70,7 @@ private fun RoutingScreen(){
             Button(
                 modifier = Modifier.weight(.5F),
                 enabled = true,
-                onClick = { }
+                onClick = {navController.navigate("route_details_screen")}
             ){
                 Text(stringResource(R.string.end_button_label), textAlign = TextAlign.Center)
             }        }
