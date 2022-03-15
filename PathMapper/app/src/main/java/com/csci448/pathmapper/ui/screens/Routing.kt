@@ -73,6 +73,7 @@ fun RoutingScreen(navController: NavController){
                 onClick = {navController.navigate("route_details_screen")}
             ){
                 Text(stringResource(R.string.end_button_label), textAlign = TextAlign.Center)
-            }        }
+            }
+        }
     }
 }

@@ -37,7 +37,16 @@ private fun PreviewRouteDetailsScreen(){
 @Composable
 fun RouteDetailsScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
-        Title("*Route name*")
+        Row {
+            Button(
+                modifier = Modifier.weight(.2F),
+                enabled = true,
+                onClick = {navController.navigate("past_routes_screen")}
+            ){
+                Text("<", textAlign = TextAlign.Center)
+            }
+            Text("*Route name", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.8F))
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Text("*Interactive map", fontSize = 48.sp)
         Spacer(modifier = Modifier.height(16.dp))

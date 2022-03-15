@@ -1,5 +1,6 @@
 package com.csci448.pathmapper.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -70,7 +71,7 @@ fun PastRoutesScreen(navController: NavController){
             onValueChange = { text = it },
             label = { Text(stringResource(R.string.search_box_label), fontSize = FONT_SIZE) }
         )
-        NewButton(stringResource(R.string.search_box_label, true)) {}
+        NewButton(stringResource(R.string.search_box_label, true)) { }
         Spacer(modifier = Modifier.height(16.dp))
         Text("*List of Past Routes")
     }
