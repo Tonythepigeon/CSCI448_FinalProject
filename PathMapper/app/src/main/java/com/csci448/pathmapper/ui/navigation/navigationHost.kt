@@ -10,9 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.ui.screens.*
+import com.csci448.pathmapper.util.GenerateMap
+import com.csci448.pathmapper.util.LocationUtility
 
 @Composable
 fun PathMapperNavHost(){
+    GenerateMap()
     val navController = rememberNavController()
     NavHost(
         navController = navController,

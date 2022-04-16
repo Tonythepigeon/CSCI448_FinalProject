@@ -23,5 +23,6 @@
     <string name="battery_efficient_label">Efficient</string>
     <string name="battery_moderate_label">Moderate</string>
     <string name="battery_most_accurate_label">Most Accurate</string>
-
+    <string name="location_reason_message">a Toast politely asking the user to change their mind.</string>
+    <string name="location_denied">We must access your location to plot where you are</string>
 </resources>

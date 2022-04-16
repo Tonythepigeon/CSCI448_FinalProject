@@ -1,39 +1,49 @@
 package com.csci448.pathmapper.ui.screens
 
-import androidx.compose.foundation.clickable
+import android.location.Location
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.csci448.pathmapper.MainActivity
+import com.csci448.pathmapper.MainActivityContent
 import com.csci448.pathmapper.R
+import com.csci448.pathmapper.util.GenerateMap
+import com.csci448.pathmapper.util.GenerateMap.Companion.locationUtility
+import com.csci448.pathmapper.util.LocationUtility
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.compose.CameraPositionState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
 
 
+//@RequiresApi(Build.VERSION_CODES.M)
+//@Preview(showBackground = true)
+//@Composable
+//private fun PreviewRouteDetailsScreen(){
+//    RouteDetailsScreen(navController = rememberNavController())
+//}
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewRouteDetailsScreen(){
-    RouteDetailsScreen(navController = rememberNavController())
-}
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun RouteDetailsScreen(navController: NavController){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
@@ -47,8 +57,11 @@ fun RouteDetailsScreen(navController: NavController){
             }
             Text("*Route name", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.8F))
         }
+
+        val temp = GenerateMap() //Error here   
+        temp.MapContent()
+
         Spacer(modifier = Modifier.height(16.dp))
-        Text("*Interactive map", fontSize = 48.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.info_label), textAlign = TextAlign.Center, fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
