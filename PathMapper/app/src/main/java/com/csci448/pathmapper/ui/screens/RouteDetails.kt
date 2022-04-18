@@ -1,7 +1,5 @@
 package com.csci448.pathmapper.ui.screens
 
-import android.app.Activity
-import android.location.Location
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -15,24 +13,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.csci448.pathmapper.InteractiveMap
 import com.csci448.pathmapper.MainActivity
 import com.csci448.pathmapper.R
-import com.csci448.pathmapper.util.GenerateMap
-import com.csci448.pathmapper.util.LocationUtility
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.model.PolylineOptions
 
 
 //@RequiresApi(Build.VERSION_CODES.M)
@@ -59,6 +45,7 @@ fun RouteDetailsScreen(navController: NavController, mainActivity : ComponentAct
         }
 
         InteractiveMap(locationUtility = MainActivity.locationUtility , comp = mainActivity)
+
 
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))

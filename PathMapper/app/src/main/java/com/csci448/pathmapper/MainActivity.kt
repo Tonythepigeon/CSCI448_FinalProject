@@ -1,8 +1,10 @@
 package com.csci448.pathmapper
 
+import android.app.Activity
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -23,35 +25,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.PackageManagerCompat
+import androidx.core.content.PackageManagerCompat.LOG_TAG
 import com.csci448.pathmapper.ui.navigation.PathMapperNavHost
 
 import com.csci448.pathmapper.util.LocationUtility
 import com.csci448.pathmapper.ui.theme.PathMapperTheme
-import com.csci448.pathmapper.util.GenerateMap
+import com.csci448.pathmapper.util.PolyActivity
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.compose.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
-public class MainActivity : BatoActivity, ComponentActivity() {
+public class MainActivity : ComponentActivity() {
     companion object {
         lateinit var locationUtility: LocationUtility
-    }
+        val polyActivity = PolyActivity()
+        val points = mutableListOf<LatLng>()
 
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun locationLogger(start: Boolean, ticks: Long, comp : ComponentActivity ) = runBlocking {
+//            launch {
+//                while (start) {
+//                    delay(ticks)
+//                    locationUtility.checkPermissionAndGetLocation(comp)
+//                    Log.e(LOG_TAG, "Location logged!")
+//                }
+//            }
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         locationUtility = LocationUtility(this )
+        locationUtility.checkPermissionAndGetLocation(this)
 
         setContent {
             MainActivityContent()
-//            val temp = GenerateMap()
-//            temp.MapContent()
+//
         }
     }
     @RequiresApi(Build.VERSION_CODES.M)
@@ -82,28 +100,27 @@ public class MainActivity : BatoActivity, ComponentActivity() {
 
 
 
-
 @Composable
 fun googleMap(locationState: State<Location?>, onGetLocation: () -> Unit, addressState: State<String>, cameraPositionState: CameraPositionState){
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxSize()
         .wrapContentWidth(Alignment.CenterHorizontally)){
-        Button(enabled = true, onClick = onGetLocation){
-            Text("Get Current Location")
-        }
+
         val locationPosition = locationState.value?.let {
             LatLng(it.latitude, it.longitude)
         } ?: LatLng(0.0, 0.0)
-        GoogleMap(modifier = Modifier.fillMaxSize(),
+        val map = GoogleMap(modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
         ) {
             if(locationState.value != null) {
+                MainActivity.points.add(locationPosition)
                 Marker(
                     position = locationPosition,
                     title = addressState.value,
                     snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
                 )
+                Polyline(points = MainActivity.points)
             }
         }
     }
