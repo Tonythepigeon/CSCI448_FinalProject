@@ -1,5 +1,9 @@
 package com.csci448.pathmapper.ui.navigation
 
+import android.app.Activity
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,8 +17,9 @@ import com.csci448.pathmapper.ui.screens.*
 import com.csci448.pathmapper.util.GenerateMap
 import com.csci448.pathmapper.util.LocationUtility
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun PathMapperNavHost(){
+fun PathMapperNavHost(mainActivity : ComponentActivity){
     GenerateMap()
     val navController = rememberNavController()
     NavHost(
@@ -31,7 +36,7 @@ fun PathMapperNavHost(){
             PastRoutesScreen(navController = navController)
         }
         composable("route_details_screen") {
-            RouteDetailsScreen(navController = navController)
+            RouteDetailsScreen(navController = navController, mainActivity)
         }
         composable("routing_screen") {
             RoutingScreen(navController = navController)

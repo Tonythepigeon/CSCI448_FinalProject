@@ -1,5 +1,6 @@
 package com.csci448.pathmapper.ui.screens
 
+import android.app.Activity
 import android.location.Location
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -19,11 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.csci448.pathmapper.InteractiveMap
 import com.csci448.pathmapper.MainActivity
-import com.csci448.pathmapper.MainActivityContent
 import com.csci448.pathmapper.R
 import com.csci448.pathmapper.util.GenerateMap
-import com.csci448.pathmapper.util.GenerateMap.Companion.locationUtility
 import com.csci448.pathmapper.util.LocationUtility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -45,7 +45,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun RouteDetailsScreen(navController: NavController){
+fun RouteDetailsScreen(navController: NavController, mainActivity : ComponentActivity){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Row {
             Button(
@@ -58,8 +58,7 @@ fun RouteDetailsScreen(navController: NavController){
             Text("*Route name", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.8F))
         }
 
-        val temp = GenerateMap() //Error here   
-        temp.MapContent()
+        InteractiveMap(locationUtility = MainActivity.locationUtility , comp = mainActivity)
 
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))

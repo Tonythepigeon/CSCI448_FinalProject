@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.PackageManagerCompat
 import com.csci448.pathmapper.MainActivity
-import com.csci448.pathmapper.MainActivityContent
 import com.csci448.pathmapper.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -39,9 +38,7 @@ import java.security.AccessController.getContext
 class GenerateMap : ComponentActivity() {
     val context = getContext();
 
-    companion object {
-        lateinit var locationUtility: LocationUtility
-    }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,154 +51,7 @@ class GenerateMap : ComponentActivity() {
     @Composable
     fun MapContent(){
         Log.d(PackageManagerCompat.LOG_TAG, "########################################")
-        locationUtility = LocationUtility(this@GenerateMap )
-        locationUtility.checkPermissionAndGetLocation(this@GenerateMap)
-        InteractiveMap(locationUtility = locationUtility, comp = this@GenerateMap)
-    }
-    @RequiresApi(Build.VERSION_CODES.M)
-    @Composable
-    fun InteractiveMap(locationUtility : LocationUtility, comp : ComponentActivity) {
-        val locationState =
-            locationUtility.viewModel.currentLocationLiveData.observeAsState()
-        val addressState =
-            locationUtility.viewModel.currentAddressLiveData.observeAsState("")
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 0f)
-        }
-        val con = LocalContext.current
-        LaunchedEffect(locationState.value) {
-            //locationUtility.getAddressForCurrentLocation( this@MainActivity )
-            // create a point for the corresponding lat/long
-            val locationPosition = locationState.value?.let {
-                LatLng(it.latitude, it.longitude)
-            }
-            if(locationPosition != null) {
-                // include all points that should be within the bounds of the zoom
-                // convex hull
-                val bounds = LatLngBounds.Builder()
-                    .include(locationPosition)
-                    .build()
-                // add padding
-                val padding = con
-                    .resources
-                    .getDimensionPixelSize(R.dimen.map_inset_padding)
-                // create a camera to smoothly move the map view
-                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                // move our camera!
-                cameraPositionState.animate(cameraUpdate)
-            }
-        }
-        googleMap(
-            locationState = locationState,
-            addressState = addressState,
-            onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp)},
-            cameraPositionState = cameraPositionState
-        )
-    }
-}
-@Composable
-fun googleMap(locationState: State<Location?>, onGetLocation: () -> Unit, addressState: State<String>, cameraPositionState: CameraPositionState){
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()
-        .wrapContentWidth(Alignment.CenterHorizontally)){
-        Button(enabled = true, onClick = onGetLocation){
-            Text("Get Current Location")
-        }
-        val locationPosition = locationState.value?.let {
-            LatLng(it.latitude, it.longitude)
-        } ?: LatLng(0.0, 0.0)
-        GoogleMap(modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
-        ) {
-            if(locationState.value != null) {
-                Marker(
-                    position = locationPosition,
-                    title = addressState.value,
-                    snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
-                )
-            }
-        }
-    }
-}
-@RequiresApi(Build.VERSION_CODES.M)
-@Composable
-fun InteractiveMap(locationUtility : LocationUtility, comp : ComponentActivity) {
-    val locationState =
-        locationUtility.viewModel.currentLocationLiveData.observeAsState()
-    val addressState =
-        locationUtility.viewModel.currentAddressLiveData.observeAsState("")
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 0f)
-    }
-    val con = LocalContext.current
-    LaunchedEffect(locationState.value) {
-//        locationUtility.getAddressForCurrentLocation( MainActivity() )
-        // create a point for the corresponding lat/long
-        val locationPosition = locationState.value?.let {
-            LatLng(it.latitude, it.longitude)
-        }
-        if(locationPosition != null) {
-            // include all points that should be within the bounds of the zoom
-            // convex hull
-            val bounds = LatLngBounds.Builder()
-                .include(locationPosition)
-                .build()
-            // add padding
-            val padding = con
-                .resources
-                .getDimensionPixelSize(R.dimen.map_inset_padding)
-            // create a camera to smoothly move the map view
-            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-            // move our camera!
-            cameraPositionState.animate(cameraUpdate)
-        }
-    }
-    googleMap(
-        locationState = locationState,
-        addressState = addressState,
-        onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp)},
-        cameraPositionState = cameraPositionState
-    )
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    @Composable
-    fun InteractiveMap(locationUtility : LocationUtility, comp : ComponentActivity) {
-        val locationState =
-            locationUtility.viewModel.currentLocationLiveData.observeAsState()
-        val addressState =
-            locationUtility.viewModel.currentAddressLiveData.observeAsState("")
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 0f)
-        }
-        val con = LocalContext.current
-        LaunchedEffect(locationState.value) {
-            //locationUtility.getAddressForCurrentLocation( this@MainActivity )
-            // create a point for the corresponding lat/long
-            val locationPosition = locationState.value?.let {
-                LatLng(it.latitude, it.longitude)
-            }
-            if(locationPosition != null) {
-                // include all points that should be within the bounds of the zoom
-                // convex hull
-                val bounds = LatLngBounds.Builder()
-                    .include(locationPosition)
-                    .build()
-                // add padding
-                val padding = con
-                    .resources
-                    .getDimensionPixelSize(R.dimen.map_inset_padding)
-                // create a camera to smoothly move the map view
-                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                // move our camera!
-                cameraPositionState.animate(cameraUpdate)
-            }
-        }
-        googleMap(
-            locationState = locationState,
-            addressState = addressState,
-            onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp)},
-            cameraPositionState = cameraPositionState
-        )
     }
+
 }
