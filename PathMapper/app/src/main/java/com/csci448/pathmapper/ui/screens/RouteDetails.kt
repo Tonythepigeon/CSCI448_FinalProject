@@ -44,7 +44,7 @@ fun RouteDetailsScreen(navController: NavController, mainActivity : ComponentAct
             Text("*Route name", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.8F))
         }
 
-        InteractiveMap(locationUtility = MainActivity.locationUtility , comp = mainActivity)
+        InteractiveMap(1F, .5F, locationUtility = MainActivity.locationUtility , comp = mainActivity)
 
 
         Spacer(modifier = Modifier.height(16.dp))

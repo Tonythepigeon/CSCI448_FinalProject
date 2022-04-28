@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -23,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -41,7 +42,7 @@ fun Title(stringIn: String){
 @Composable
 fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
     Button(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth() .padding(8.dp),
         enabled = enabled,
         onClick = onClick
     ){
@@ -49,29 +50,116 @@ fun NewButton(text: String, enabled: Boolean = true, onClick: () -> Unit){
     }
 }
 @Composable
-fun RadioGroup(
-    options: List<String>?,
-    selectedOption: String?,
-    onOptionSelected: (String) -> Unit) =
-    options?.forEach { item ->
-        Row(
-            Modifier.padding(top = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(
-                selected = (item == selectedOption),
-                onClick = {onOptionSelected(item) },
-            )
-            ClickableText(
-                text = AnnotatedString(item),
-                modifier = Modifier.padding(start = 4.dp),
-                style = TextStyle(fontSize = FONT_SIZE),
-                onClick = {
-                    onOptionSelected(item)
-                }
-            )
+fun radioGroup(
+    radioOptions: List<String> = listOf(),
+    title: String = "",
+    cardBackgroundColor: Color = Color(0xFFFEFEFA)
+):String{
+    if (radioOptions.isNotEmpty()){
+        val (selectedOption, onOptionSelected) = remember {
+            mutableStateOf(radioOptions[0])
         }
+
+        Card(
+            backgroundColor = cardBackgroundColor,
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            elevation = 8.dp,
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(
+                Modifier.padding(10.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(5.dp),
+                )
+
+                radioOptions.forEach { item ->
+                    Row(
+                        Modifier.padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (item == selectedOption),
+                            onClick = { onOptionSelected(item) }
+                        )
+
+                        val annotatedString = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(fontWeight = FontWeight.Bold)
+                            ){ append("  $item  ") }
+                        }
+
+                        ClickableText(
+                            text = annotatedString,
+                            onClick = {
+                                onOptionSelected(item)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        return selectedOption
+    }else{
+        return ""
     }
+}
+
+@Composable
+fun colorRadioGroup(
+    radioOptions: List<Color> = listOf(),
+    title: String = "",
+    cardBackgroundColor: Color = Color(0xFFFEFEFA)
+):String{
+    if (radioOptions.isNotEmpty()){
+        val (selectedOption, onOptionSelected) = remember {
+            mutableStateOf(radioOptions[0])
+        }
+
+        Card(
+            backgroundColor = cardBackgroundColor,
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            elevation = 8.dp,
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(
+                Modifier.padding(10.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(5.dp),
+                )
+                Row(){
+                radioOptions.forEach { item ->
+//                    Column(
+//                        //Modifier.padding(5.dp),
+//                        //verticalAlignment = Alignment.CenterVertically
+//                    ) {
+                        RadioButton(
+                            selected = (item == selectedOption),
+                            onClick = { onOptionSelected(item) },
+                            colors = RadioButtonDefaults.colors(selectedColor = item, unselectedColor = item)
+                        )
+//
+                    }
+
+                }
+            }
+        }
+        return selectedOption.toString()
+    }else{
+        return ""
+    }
+}
 @Composable
 fun ColorRadioGroup(
     options: List<Color>?,
@@ -86,37 +174,28 @@ fun ColorRadioGroup(
             )
         }
     }
-//@RequiresApi(Build.VERSION_CODES.M)
-//@Preview(showBackground = true)
-//@Composable
-//private fun PreviewHomeScreen(){
-//    HomeScreen(navController = rememberNavController())
-//}
+
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun HomeScreen(navController: NavController, mainActivity: ComponentActivity){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.begin_route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
-        val nameIn = stringResource(R.string.name_label)
-        var text by rememberSaveable { mutableStateOf(nameIn) }
-        TextField(
-            value = "",
-            onValueChange = { text = it },
-            label = { Text(stringResource(R.string.name_label), fontSize = FONT_SIZE) }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.battery_label), fontSize = FONT_SIZE)
-        Spacer(modifier = Modifier.height(16.dp))
-        RadioGroup(listOf(stringResource(R.string.battery_efficient_label),
+//        val nameIn = stringResource(R.string.name_label)
+//        var text by rememberSaveable { mutableStateOf(nameIn) }
+//        TextField(
+//            value = "",
+//            onValueChange = { text = it },
+//            label = { Text(stringResource(R.string.name_label), fontSize = FONT_SIZE) }
+//        )
+//        Spacer(modifier = Modifier.height(16.dp))
+        radioGroup(listOf(
+            stringResource(R.string.battery_efficient_label),
             stringResource(R.string.battery_moderate_label),
             stringResource(R.string.battery_most_accurate_label)),
-            stringResource(R.string.battery_efficient_label)) { option -> print(option)}
+            stringResource(R.string.battery_label))
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.color_label), fontSize = FONT_SIZE)
-        Spacer(modifier = Modifier.height(16.dp))
-        ColorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red),
-            selectedOption = Color.Blue) {option -> print(option)}
+        colorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red), stringResource(R.string.color_label))
         Spacer(modifier = Modifier.height(16.dp))
         NewButton(stringResource(R.string.start_button_label, true)) {navController.navigate("routing_screen");
             MainActivity.locationLogger(true, 1000, mainActivity)}

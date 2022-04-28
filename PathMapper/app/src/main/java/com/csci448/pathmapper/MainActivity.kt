@@ -8,10 +8,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -24,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.PackageManagerCompat
 import androidx.core.content.PackageManagerCompat.LOG_TAG
@@ -47,7 +45,7 @@ import kotlinx.coroutines.runBlocking
 public class MainActivity : ComponentActivity() {
     companion object {
         lateinit var locationUtility: LocationUtility
-        val polyActivity = PolyActivity()
+
         val points = mutableListOf<LatLng>()
 
         @RequiresApi(Build.VERSION_CODES.M)
@@ -101,16 +99,15 @@ public class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun googleMap(locationState: State<Location?>, onGetLocation: () -> Unit, addressState: State<String>, cameraPositionState: CameraPositionState){
+fun googleMap(Width: Float, Height: Float, locationState: State<Location?>, onGetLocation: () -> Unit, addressState: State<String>, cameraPositionState: CameraPositionState){
     Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()
+        .padding(8.dp)
         .wrapContentWidth(Alignment.CenterHorizontally)){
 
         val locationPosition = locationState.value?.let {
             LatLng(it.latitude, it.longitude)
         } ?: LatLng(0.0, 0.0)
-        val map = GoogleMap(modifier = Modifier.fillMaxSize(),
+        val map = GoogleMap(modifier = Modifier.fillMaxWidth(Width) .fillMaxHeight(Height),
             cameraPositionState = cameraPositionState
         ) {
             if(locationState.value != null) {
@@ -120,14 +117,14 @@ fun googleMap(locationState: State<Location?>, onGetLocation: () -> Unit, addres
                     title = addressState.value,
                     snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
                 )
-                Polyline(points = MainActivity.points)
+                //Polyline(points = MainActivity.points)
             }
         }
     }
 }
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun InteractiveMap(locationUtility : LocationUtility, comp : ComponentActivity) {
+fun InteractiveMap(width : Float, height : Float, locationUtility : LocationUtility, comp : ComponentActivity) {
     val locationState =
         locationUtility.viewModel.currentLocationLiveData.observeAsState()
     val addressState =
@@ -159,6 +156,8 @@ fun InteractiveMap(locationUtility : LocationUtility, comp : ComponentActivity) 
         }
     }
     googleMap(
+        Width = width,
+        Height = height,
         locationState = locationState,
         addressState = addressState,
         onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp) },

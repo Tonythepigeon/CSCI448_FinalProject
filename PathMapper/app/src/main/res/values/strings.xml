@@ -14,7 +14,7 @@
     <string name="route_options_button_label">Route Options</string>
     <string name="map_label">Map</string>
     <string name="lap_button_label">Lap</string>
-    <string name="end_button_label">End</string>
+    <string name="end_button_label">Finish Route!</string>
     <string name="info_label">Info</string>
     <string name="date_label">Date:</string>
     <string name="time_label">Time:</string>

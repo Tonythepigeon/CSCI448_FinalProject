@@ -31,7 +31,7 @@ fun PathMapperNavHost(mainActivity : ComponentActivity){
             RouteDetailsScreen(navController = navController, mainActivity)
         }
         composable("routing_screen") {
-            RoutingScreen(navController = navController)
+            RoutingScreen(navController = navController, mainActivity)
         }
     }
 }
