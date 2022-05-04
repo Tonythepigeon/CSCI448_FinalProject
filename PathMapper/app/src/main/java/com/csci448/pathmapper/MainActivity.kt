@@ -19,12 +19,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.PackageManagerCompat
 import androidx.core.content.PackageManagerCompat.LOG_TAG
+import androidx.lifecycle.ViewModelProvider
+import com.csci448.capra_a3.ui.viewmodels.ThisViewModel
+import com.csci448.capra_a3.ui.viewmodels.ViewModelFactory
+import com.csci448.pathmapper.data.database.Path
 import com.csci448.pathmapper.ui.navigation.PathMapperNavHost
 
 import com.csci448.pathmapper.util.LocationUtility
@@ -43,13 +48,15 @@ import kotlinx.coroutines.runBlocking
 
 
 public class MainActivity : ComponentActivity() {
+
     companion object {
         lateinit var locationUtility: LocationUtility
-
+        lateinit var thisViewModel: ThisViewModel
+        lateinit var locationState:  State<Location?>
         val points = mutableListOf<LatLng>()
 
-        @RequiresApi(Build.VERSION_CODES.M)
-        fun locationLogger(start: Boolean, ticks: Long, comp : ComponentActivity ) = runBlocking {
+//        @RequiresApi(Build.VERSION_CODES.M)
+//        fun locationLogger(start: Boolean, ticks: Long, comp : ComponentActivity ) = runBlocking {
 //            launch {
 //                while (start) {
 //                    delay(ticks)
@@ -57,15 +64,19 @@ public class MainActivity : ComponentActivity() {
 //                    Log.e(LOG_TAG, "Location logged!")
 //                }
 //            }
-        }
+//        }
     }
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val factory = ViewModelFactory(this)
+        thisViewModel = ViewModelProvider(this, factory).get(factory.getViewModelClass())
         locationUtility = LocationUtility(this )
-        locationUtility.checkPermissionAndGetLocation(this)
+        locationUtility.checkPermissionAndGetLocation(this, -2)
 
         setContent {
+            locationState = MainActivity.thisViewModel.currentLocationLiveData.observeAsState()
+            Log.e(LOG_TAG, "PASS -1 WENT THROUGH with lat: " + locationState.value?.latitude)
             MainActivityContent()
 //
         }
@@ -107,7 +118,7 @@ fun googleMap(Width: Float, Height: Float, locationState: State<Location?>, onGe
         val locationPosition = locationState.value?.let {
             LatLng(it.latitude, it.longitude)
         } ?: LatLng(0.0, 0.0)
-        val map = GoogleMap(modifier = Modifier.fillMaxWidth(Width) .fillMaxHeight(Height),
+        GoogleMap(modifier = Modifier.fillMaxWidth(Width) .fillMaxHeight(Height),
             cameraPositionState = cameraPositionState
         ) {
             if(locationState.value != null) {
@@ -117,9 +128,19 @@ fun googleMap(Width: Float, Height: Float, locationState: State<Location?>, onGe
                     title = addressState.value,
                     snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
                 )
-                //Polyline(points = MainActivity.points)
+                if(Height == 0.5F) {
+                    val tmp : Path = MainActivity.thisViewModel.thisPath!!
+                    Log.e(LOG_TAG, "GENERATE POLYLINE: " + tmp.startLat + " " + tmp.endLat)
+                    val temp : List<LatLng> = listOf(LatLng(tmp.startLat!!, tmp.startLng!!), LatLng(tmp.endLat!!, tmp.endLng!!))
+
+                    Polyline(
+                        temp,
+                        color = Color(MainActivity.thisViewModel.thisPath!!.color.substring(6,9).toFloat(), MainActivity.thisViewModel.thisPath!!.color.substring(11,14).toFloat(), MainActivity.thisViewModel.thisPath!!.color.substring(16,19).toFloat())
+                    )
+                }
             }
         }
+
     }
 }
 @RequiresApi(Build.VERSION_CODES.M)
@@ -130,7 +151,9 @@ fun InteractiveMap(width : Float, height : Float, locationUtility : LocationUtil
     val addressState =
         locationUtility.viewModel.currentAddressLiveData.observeAsState("")
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 0f)
+        position = CameraPosition.fromLatLngZoom(LatLng(MainActivity.locationState.value?.latitude
+            ?: 0.0, MainActivity.locationState.value?.longitude ?: 0.0
+        ), 0f)
     }
     val con = LocalContext.current
     LaunchedEffect(locationState.value) {
@@ -160,7 +183,7 @@ fun InteractiveMap(width : Float, height : Float, locationUtility : LocationUtil
         Height = height,
         locationState = locationState,
         addressState = addressState,
-        onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp) },
+        onGetLocation = { locationUtility.checkPermissionAndGetLocation(comp, 0) },
         cameraPositionState = cameraPositionState
     )
 }

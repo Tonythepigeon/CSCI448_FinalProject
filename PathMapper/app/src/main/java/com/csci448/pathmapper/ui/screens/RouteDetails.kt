@@ -19,6 +19,7 @@ import com.csci448.pathmapper.MainActivity
 import com.csci448.pathmapper.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import java.text.DecimalFormat
 
 
 //@RequiresApi(Build.VERSION_CODES.M)
@@ -31,17 +32,17 @@ import com.google.android.gms.maps.model.PolylineOptions
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun RouteDetailsScreen(navController: NavController, mainActivity : ComponentActivity){
+fun RouteDetailsScreen(navController: NavController, mainActivity : MainActivity){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Row {
             Button(
-                modifier = Modifier.weight(.2F),
+                modifier = Modifier.weight(.4F),
                 enabled = true,
                 onClick = {navController.navigate("past_routes_screen")}
             ){
-                Text("<", textAlign = TextAlign.Center)
+                Text("History", textAlign = TextAlign.Center)
             }
-            Text("*Route name", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.8F))
+            Text("Route Details", color= Color.Blue, fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.weight(.6F))
         }
 
         InteractiveMap(1F, .5F, locationUtility = MainActivity.locationUtility , comp = mainActivity)
@@ -52,16 +53,29 @@ fun RouteDetailsScreen(navController: NavController, mainActivity : ComponentAct
         Text(stringResource(R.string.info_label), textAlign = TextAlign.Center, fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
         Row() {
-            Text(stringResource(R.string.date_label),
+            Text(stringResource(R.string.date_label) + " " + (MainActivity.thisViewModel.thisPath?.date ?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.Start, fontSize = FONT_SIZE)
-            Text(stringResource(R.string.time_label),
+            Text(stringResource(R.string.time_label) + " " + (String.format("%02d", (MainActivity.thisViewModel.thisPath?.endTime?.substring(0, 2)?.toInt()!! -
+            MainActivity.thisViewModel.thisPath?.startTime?.substring(0, 2)?.toInt()!!)) + ":" +
+                    String.format("%02d",MainActivity.thisViewModel.thisPath?.endTime?.substring(3, 5)?.toInt()!! -
+            MainActivity.thisViewModel.thisPath?.startTime?.substring(3, 5)?.toInt()!!) + ":" +
+                    String.format("%02d", MainActivity.thisViewModel.thisPath?.endTime?.substring(6, 8)?.toInt()!! -
+            MainActivity.thisViewModel.thisPath?.startTime?.substring(6, 8)?.toInt()!!) ?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row() {
-            Text(stringResource(R.string.length_label),
+            Text(stringResource(R.string.length_label)  + " " + (MainActivity.thisViewModel.thisPath?.length + " Feet"?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.Start, fontSize = FONT_SIZE)
-            Text(stringResource(R.string.average_speed_label),
+            val df = DecimalFormat("#.###")
+            Text(stringResource(R.string.average_speed_label) + "\n" + (df.format(MainActivity.thisViewModel.thisPath?.length?.toDouble()
+                ?.div((MainActivity.thisViewModel.thisPath?.endTime?.substring(0, 2)?.toInt()!! -
+                        MainActivity.thisViewModel.thisPath?.startTime?.substring(0, 2)?.toInt()!!) * 3600 +
+                        (MainActivity.thisViewModel.thisPath?.endTime?.substring(3, 5)?.toInt()!! -
+                        MainActivity.thisViewModel.thisPath?.startTime?.substring(3, 5)?.toInt()!!) * 60 +
+                        (MainActivity.thisViewModel.thisPath?.endTime?.substring(6, 8)?.toInt()!! -
+                                MainActivity.thisViewModel.thisPath?.startTime?.substring(6, 8)?.toInt()!!))) + "ft/s"
+                ?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
         }
     }

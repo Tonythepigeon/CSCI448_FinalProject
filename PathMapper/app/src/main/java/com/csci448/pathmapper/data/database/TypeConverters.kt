@@ -13,13 +13,13 @@ class TypeConverters {
     @TypeConverter
     fun toUUID(uuidString: String?) = UUID.fromString(uuidString)
 
-    @TypeConverter
-    fun listToJsonString(value: List<LatLng>?): String? {
-        return if (value == null) null else Gson().toJson(value)
-    }
-    @TypeConverter
-    fun jsonStringToList(value: String?): List<LatLng>?{
-        return if(value == null) null else Gson().fromJson(value, Array<LatLng>::class.java).toList()
-    }
+//    @TypeConverter
+//    fun listToJsonString(value: List<LatLng>?): String? {
+//        return if (value == null) null else Gson().toJson(value)
+//    }
+//    @TypeConverter
+//    fun jsonStringToList(value: String?): List<LatLng>?{
+//        return if(value == null) null else Gson().fromJson(value, Array<LatLng>::class.java).toList()
+//    }
 
 }

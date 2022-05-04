@@ -12,7 +12,7 @@ import com.csci448.pathmapper.ui.screens.*
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun PathMapperNavHost(mainActivity : ComponentActivity){
+fun PathMapperNavHost(mainActivity : MainActivity){
     val navController = rememberNavController()
     NavHost(
         navController = navController,

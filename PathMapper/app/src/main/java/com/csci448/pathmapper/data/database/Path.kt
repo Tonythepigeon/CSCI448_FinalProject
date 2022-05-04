@@ -1,5 +1,6 @@
 package com.csci448.pathmapper.data.database
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,5 +12,11 @@ import java.io.Serializable
 data class Path(
     var date: String,
     var length: String,
-    var coordinates: List<LatLng>,
+    var startLat: Double?,
+    var endLat: Double?,
+    var startLng: Double?,
+    var endLng: Double?,
+    var startTime: String,
+    var endTime: String,
+    var color: String,
     @PrimaryKey val id: UUID = UUID.randomUUID()) : Serializable

@@ -19,4 +19,7 @@ interface MainDao {
     @Query("SELECT * FROM paths WHERE id=(:id)")
     fun getPath(id: UUID): LiveData<Path?>
 
+    @Query("SELECT * FROM paths LIMIT 1")
+    fun getNewPath(): LiveData<Path?>
+
 }

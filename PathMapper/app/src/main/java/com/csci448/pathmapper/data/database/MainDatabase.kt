@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.csci448.pathmapper.data.database.Path
 
-@Database(version = 1, entities = [Path::class])
-@TypeConverters(TypeConverters::class)
+@Database(version = 4, entities = [Path::class])
+//@TypeConverters(TypeConverters::class)
 abstract class MainDatabase : RoomDatabase() {
     abstract val mainDao: MainDao
 

@@ -56,7 +56,7 @@ private fun RouteRow(routeID: String, onSelectRoute: (route: String) -> Unit){
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun RoutingScreen(navController: NavController, mainActivity : ComponentActivity){
+fun RoutingScreen(navController: NavController, mainActivity : MainActivity){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
@@ -79,7 +79,11 @@ fun RoutingScreen(navController: NavController, mainActivity : ComponentActivity
             Button(
                 modifier = Modifier.fillMaxWidth() .padding(8.dp),
                 enabled = true,
-                onClick = {navController.navigate("route_details_screen")}
+                onClick =
+                {
+                    MainActivity.locationUtility.checkPermissionAndGetLocation(mainActivity, 3)
+                    MainActivity.locationUtility.logLocation(2, navController)
+                }
             ){
                 Text(stringResource(R.string.end_button_label), textAlign = TextAlign.Center)
             //}

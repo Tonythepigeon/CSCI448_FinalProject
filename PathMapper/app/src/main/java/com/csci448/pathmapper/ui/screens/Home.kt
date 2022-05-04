@@ -2,6 +2,7 @@ package com.csci448.pathmapper.ui.screens
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.content.PackageManagerCompat.LOG_TAG
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.MainActivity
@@ -155,8 +157,11 @@ fun colorRadioGroup(
                 }
             }
         }
+        Log.e(LOG_TAG, "Color selected: " + selectedOption.toString())
+        MainActivity.thisViewModel.thisPath?.color = selectedOption.toString()
         return selectedOption.toString()
     }else{
+        Log.e(LOG_TAG, "Color selected: ")
         return ""
     }
 }
@@ -177,7 +182,7 @@ fun ColorRadioGroup(
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun HomeScreen(navController: NavController, mainActivity: ComponentActivity){
+fun HomeScreen(navController: NavController, mainActivity: MainActivity){
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.begin_route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
@@ -198,6 +203,6 @@ fun HomeScreen(navController: NavController, mainActivity: ComponentActivity){
         colorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red), stringResource(R.string.color_label))
         Spacer(modifier = Modifier.height(16.dp))
         NewButton(stringResource(R.string.start_button_label, true)) {navController.navigate("routing_screen");
-            MainActivity.locationLogger(true, 1000, mainActivity)}
+            MainActivity.locationUtility.logLocation(1, navController) }
     }
 }
