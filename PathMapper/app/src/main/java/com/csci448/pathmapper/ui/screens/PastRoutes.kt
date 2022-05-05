@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.csci448.pathmapper.MainActivity
 import com.csci448.pathmapper.R
 import com.csci448.pathmapper.data.database.Path
+import java.text.DecimalFormat
 
 
 @Composable
@@ -37,11 +38,52 @@ private fun RouteRow(path: Path, onSelectRoute: (route: String) -> Unit){
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
             .fillMaxWidth()
-    ){
-        Column() {
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                start = 8.dp,
+                end = 8.dp,
+                top = 4.dp,
+                bottom = 4.dp
+            )
+        ) {
             Text(path.date)
-            Text("Start time: " + path.startTime + " - End time: " + path.endTime)
-            Text("Length of Path: " + path.length)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    "Start time: " + path.startTime,
+                    Modifier.weight(0.45F),
+                    textAlign = TextAlign.Start
+                )
+                Text("-", Modifier.weight(0.1F), textAlign = TextAlign.Center)
+                Text(
+                    "End time: " + path.endTime,
+                    Modifier.weight(0.45F),
+                    textAlign = TextAlign.End
+                )
+
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    "Length of Path: " + path.length + "ft",
+                    Modifier.weight(0.5F),
+                    textAlign = TextAlign.Start
+                )
+                val df = DecimalFormat("#.###")
+                Text(
+                    "Speed: " + (df.format(
+                        path.length.toDouble()
+                            .div(
+                                (path.endTime.substring(0, 2).toInt() -
+                                        path.startTime.substring(0, 2).toInt()) * 3600 +
+                                        (path.endTime.substring(3, 5).toInt() -
+                                                path.startTime.substring(3, 5).toInt()) * 60 +
+                                        (path.endTime.substring(6, 8).toInt() -
+                                                path.startTime.substring(6, 8).toInt())
+                            )
+                    ) + "ft/s"
+                        ?: " "), Modifier.weight(0.5F), textAlign = TextAlign.End
+                )
+            }
         }
     }
 }
@@ -65,7 +107,7 @@ fun PastRoutesList(routeList: List<Path>?, onSelectRoute: (route: String) -> Uni
 fun PastRoutesScreen(navController: NavController){
     val pathListState = MainActivity.thisViewModel.pathListLiveData.observeAsState()
 
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)) {
         Title(stringResource(R.string.past_routes_page_label))
 //        Spacer(modifier = Modifier.height(16.dp))
 //        val nameIn = stringResource(R.string.search_box_label)
@@ -77,6 +119,21 @@ fun PastRoutesScreen(navController: NavController){
 //        )
 //        NewButton(stringResource(R.string.search_box_label, true)) { }
         Spacer(modifier = Modifier.height(16.dp))
-        PastRoutesList(routeList = pathListState.value, onSelectRoute = {})
+        Column(modifier = Modifier.fillMaxSize() ) {
+            Column(modifier = Modifier.weight(0.93F)) {
+                PastRoutesList(routeList = pathListState.value, onSelectRoute = {})
+            }
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(8.dp).weight(0.07F),
+                enabled = true,
+                onClick =
+                {
+                    MainActivity.thisViewModel.deleteAllData()
+                }
+            ) {
+                Text("Delete Past Routes", textAlign = TextAlign.Center)
+                //}
+            }
+        }
     }
 }

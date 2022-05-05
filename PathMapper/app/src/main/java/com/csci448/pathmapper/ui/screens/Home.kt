@@ -59,7 +59,7 @@ fun radioGroup(
 ):String{
     if (radioOptions.isNotEmpty()){
         val (selectedOption, onOptionSelected) = remember {
-            mutableStateOf(radioOptions[0])
+            mutableStateOf(radioOptions[1])
         }
 
         Card(
@@ -105,6 +105,14 @@ fun radioGroup(
                     }
                 }
             }
+        }
+        Log.e(LOG_TAG, "Power selected: " + selectedOption.toString())
+        if(selectedOption == "Most Accurate"){
+            MainActivity.thisViewModel.thisPowerLevel = 1000
+        }else if(selectedOption == "Moderate"){
+            MainActivity.thisViewModel.thisPowerLevel = 5000
+        }else{
+            MainActivity.thisViewModel.thisPowerLevel = 10000
         }
         return selectedOption
     }else{
@@ -183,6 +191,9 @@ fun ColorRadioGroup(
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun HomeScreen(navController: NavController, mainActivity: MainActivity){
+    MainActivity.thisViewModel.thisPassData.clear()
+    MainActivity.locationUtility.checkPermissionAndGetLocation(mainActivity, -2)
+
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 20.dp)){
         Title(stringResource(R.string.begin_route_page_label))
         Spacer(modifier = Modifier.height(16.dp))
@@ -202,7 +213,23 @@ fun HomeScreen(navController: NavController, mainActivity: MainActivity){
         Spacer(modifier = Modifier.height(16.dp))
         colorRadioGroup(listOf(Color.Blue, Color.Cyan, Color.Yellow, Color.Green, Color.Magenta, Color.Red), stringResource(R.string.color_label))
         Spacer(modifier = Modifier.height(16.dp))
-        NewButton(stringResource(R.string.start_button_label, true)) {navController.navigate("routing_screen");
+        NewButton(stringResource(R.string.start_button_label, true)) {
+            navController.navigate("routing_screen")
             MainActivity.locationUtility.logLocation(1, navController) }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            modifier = Modifier.fillMaxWidth() .padding(8.dp),
+            enabled = true,
+            onClick =
+            {
+                navController.navigate("past_routes_screen");
+            }
+        ){
+            Text("Past Routes", textAlign = TextAlign.Center)
+            //}
+        }
     }
+
 }

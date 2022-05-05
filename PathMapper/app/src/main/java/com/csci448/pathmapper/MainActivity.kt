@@ -72,11 +72,18 @@ public class MainActivity : ComponentActivity() {
         val factory = ViewModelFactory(this)
         thisViewModel = ViewModelProvider(this, factory).get(factory.getViewModelClass())
         locationUtility = LocationUtility(this )
-        locationUtility.checkPermissionAndGetLocation(this, -2)
 
         setContent {
             locationState = MainActivity.thisViewModel.currentLocationLiveData.observeAsState()
-            Log.e(LOG_TAG, "PASS -1 WENT THROUGH with lat: " + locationState.value?.latitude)
+            Log.e(LOG_TAG, "DEF PASS -1 WENT THROUGH with lat: " + locationState.value?.latitude)
+            if(locationState.value?.latitude != null && locationState.value?.longitude != null) {
+                thisViewModel.thisPassData.add(
+                    LatLng(
+                        locationState.value!!.latitude,
+                        locationState.value!!.longitude
+                    )
+                )
+            }
             MainActivityContent()
 //
         }
@@ -119,25 +126,28 @@ fun googleMap(Width: Float, Height: Float, locationState: State<Location?>, onGe
             LatLng(it.latitude, it.longitude)
         } ?: LatLng(0.0, 0.0)
         GoogleMap(modifier = Modifier.fillMaxWidth(Width) .fillMaxHeight(Height),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+
         ) {
             if(locationState.value != null) {
-                MainActivity.points.add(locationPosition)
-                Marker(
-                    position = locationPosition,
-                    title = addressState.value,
-                    snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
-                )
-                if(Height == 0.5F) {
+//                MainActivity.points.add(locationPosition)
+//                if(Height != 0.5F) {
+//                    Marker(
+//                        position = locationPosition,
+//                        title = addressState.value,
+//                        snippet = locationState.value?.latitude.toString() + " / " + locationState.value?.longitude.toString()
+//                    )
+//                }
+//                if(Height == 0.5F) {
                     val tmp : Path = MainActivity.thisViewModel.thisPath!!
                     Log.e(LOG_TAG, "GENERATE POLYLINE: " + tmp.startLat + " " + tmp.endLat)
-                    val temp : List<LatLng> = listOf(LatLng(tmp.startLat!!, tmp.startLng!!), LatLng(tmp.endLat!!, tmp.endLng!!))
+//                    val temp : List<LatLng> = listOf(LatLng(tmp.startLat!!, tmp.startLng!!), LatLng(tmp.endLat!!, tmp.endLng!!))
 
                     Polyline(
-                        temp,
+                        MainActivity.thisViewModel.thisPassData.toList(),
                         color = Color(MainActivity.thisViewModel.thisPath!!.color.substring(6,9).toFloat(), MainActivity.thisViewModel.thisPath!!.color.substring(11,14).toFloat(), MainActivity.thisViewModel.thisPath!!.color.substring(16,19).toFloat())
                     )
-                }
+//                }
             }
         }
 
@@ -151,9 +161,10 @@ fun InteractiveMap(width : Float, height : Float, locationUtility : LocationUtil
     val addressState =
         locationUtility.viewModel.currentAddressLiveData.observeAsState("")
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(MainActivity.locationState.value?.latitude
-            ?: 0.0, MainActivity.locationState.value?.longitude ?: 0.0
-        ), 0f)
+        position = CameraPosition.fromLatLngZoom(LatLng(
+            MainActivity.locationState.value?.latitude ?: 5.0,
+            MainActivity.locationState.value?.longitude ?: 5.0),
+            0.0f)
     }
     val con = LocalContext.current
     LaunchedEffect(locationState.value) {

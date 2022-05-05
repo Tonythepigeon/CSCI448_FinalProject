@@ -82,7 +82,9 @@ fun RoutingScreen(navController: NavController, mainActivity : MainActivity){
                 onClick =
                 {
                     MainActivity.locationUtility.checkPermissionAndGetLocation(mainActivity, 3)
+                    MainActivity.locationUtility.removeLocationRequest()
                     MainActivity.locationUtility.logLocation(2, navController)
+
                 }
             ){
                 Text(stringResource(R.string.end_button_label), textAlign = TextAlign.Center)

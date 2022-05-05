@@ -20,6 +20,7 @@ import androidx.core.content.PackageManagerCompat.LOG_TAG
 import androidx.navigation.NavController
 import com.csci448.capra_a3.ui.viewmodels.IViewModel
 import com.csci448.pathmapper.MainActivity
+import com.csci448.pathmapper.MainActivity.Companion.thisViewModel
 import com.csci448.pathmapper.R
 import com.csci448.pathmapper.data.database.Path
 import com.google.android.gms.location.*
@@ -33,12 +34,12 @@ class LocationUtility(activity: ComponentActivity) {
     val viewModel: IViewModel = MainActivity.thisViewModel
     private val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
     private val locationRequest = LocationRequest.create().apply {
-        interval = 0
-        numUpdates = 3
+        interval = 10000
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
     init {
+
 //        val factory = GeoLocatrViewModelFactory()
 //        viewModel = ViewModelProvider(activity, factory)[factory.getViewModelClass()]
     }
@@ -86,11 +87,12 @@ class LocationUtility(activity: ComponentActivity) {
         return rad * 180.0 / Math.PI
     }
     fun logLocation(pass: Int, navController: NavController){
+        locationRequest.interval = MainActivity.thisViewModel.thisPowerLevel.toLong()
         val day = SimpleDateFormat("dd/M/yyyy")
         val time =  SimpleDateFormat("hh:mm:ss")
         if(pass == 1){
             Log.e(LOG_TAG, "PASS 1 WENT THROUGH with lat: " + MainActivity.locationState.value?.latitude)
-            Log.e(LOG_TAG, "PASS 1 WENT THROUGH with lat: " + MainActivity.locationState.value?.longitude)
+            Log.e(LOG_TAG, "PASS 1 WENT THROUGH with long: " + MainActivity.locationState.value?.longitude)
             val currentDay = day.format(Date())
             val currentTime = time.format(Date())
             MainActivity.thisViewModel.thisPath = (Path(
@@ -112,30 +114,38 @@ class LocationUtility(activity: ComponentActivity) {
 
             val oldPath = MainActivity.thisViewModel.thisPath
             if(oldPath != null) {
+                //locationRequest.setNumUpdates(1)
                 Log.e(LOG_TAG, "PASS 2 WENT THROUGH with lats: " + oldPath.startLat + " " + MainActivity.locationState.value?.latitude)
                 Log.e(LOG_TAG, "PASS 2 WENT THROUGH with lngs: " + oldPath.startLng + " " + MainActivity.locationState.value?.longitude)
-                MainActivity.thisViewModel.currentLocationLiveData.value?.latitude = MainActivity.thisViewModel.currentLocationLiveData.value?.latitude?.plus(
-                    0.00005
-                )!!
-                MainActivity.thisViewModel.currentLocationLiveData.value?.longitude = MainActivity.thisViewModel.currentLocationLiveData.value?.longitude?.plus(
-                    0.00008
-                )!!
+                //###USE REAL DATA VS SIMULATED###
+//                MainActivity.thisViewModel.currentLocationLiveData.value?.latitude = MainActivity.thisViewModel.currentLocationLiveData.value?.latitude?.plus(
+//                    0.00005
+//                )!!
+//                MainActivity.thisViewModel.currentLocationLiveData.value?.longitude = MainActivity.thisViewModel.currentLocationLiveData.value?.longitude?.plus(
+//                    0.00008
+//                )!!
+                var totalDistace : Double = 0.0
+                var i : Int = 0
+                val pathList = thisViewModel.thisPassData.toList()
+                if(pathList != null) {
+                    while (i < pathList.size - 1) {
+                        totalDistace += distance(
+                            pathList[i].latitude,
+                            pathList[i].longitude,
+                            pathList[i + 1].latitude,
+                            pathList[i + 1].longitude
+                        ).toDouble()
+                        i++
+                    }
+                }
+                var df = DecimalFormat("#.#")
                 MainActivity.thisViewModel.thisPath = (Path(
                     date = oldPath.date,
-                    length = distance(
-                        oldPath.startLat,
-                        oldPath.startLng,
-                        MainActivity.locationState.value?.latitude,
-                        MainActivity.locationState.value?.longitude
-//                        oldPath.startLat?.plus(.001),
-//                        oldPath.startLng?.plus(.001)
-                    ),
+                    length = df.format(totalDistace),
                     startLat = oldPath.startLat,
                     endLat = MainActivity.locationState.value?.latitude,
-                    //endLat = oldPath.startLat?.plus(.001),
                     startLng = oldPath.startLng,
                     endLng = MainActivity.locationState.value?.longitude,
-                    //endLng = oldPath.startLng?.plus(.001),
                     startTime = oldPath.startTime,
                     endTime = currentTime,
                     color = MainActivity.thisViewModel.thisPath?.color ?: ""

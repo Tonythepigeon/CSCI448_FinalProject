@@ -36,5 +36,8 @@ class ThisViewModel(
         pathIdLiveData.value?.let { loadPath(it) }
     }
 
+    override fun deleteAllData() {
+        mainRepository.deleteAllData()
+    }
 
 }

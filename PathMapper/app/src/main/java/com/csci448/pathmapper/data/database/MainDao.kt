@@ -22,4 +22,7 @@ interface MainDao {
     @Query("SELECT * FROM paths LIMIT 1")
     fun getNewPath(): LiveData<Path?>
 
+    @Query("DELETE FROM paths")
+    fun deleteAllData()
+
 }

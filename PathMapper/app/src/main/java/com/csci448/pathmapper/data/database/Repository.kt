@@ -30,4 +30,5 @@ class Repository private constructor(private val mainDao: MainDao){
     fun getPaths(): LiveData<List<Path>> = mainDao.getPaths()
     fun getPath(id: UUID): LiveData<Path?> = mainDao.getPath(id)
     fun getNewPath(): LiveData<Path?> = mainDao.getNewPath()
+    fun deleteAllData() = mainDao.deleteAllData()
 }

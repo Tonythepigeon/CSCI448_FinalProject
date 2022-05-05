@@ -53,14 +53,26 @@ fun RouteDetailsScreen(navController: NavController, mainActivity : MainActivity
         Text(stringResource(R.string.info_label), textAlign = TextAlign.Center, fontSize = FONT_SIZE)
         Spacer(modifier = Modifier.height(16.dp))
         Row() {
+            var seconds : Int = MainActivity.thisViewModel.thisPath?.endTime?.substring(6, 8)?.toInt()!! -
+                    MainActivity.thisViewModel.thisPath?.startTime?.substring(6, 8)?.toInt()!!;
+            var minuites = MainActivity.thisViewModel.thisPath?.endTime?.substring(3, 5)?.toInt()!! -
+                    MainActivity.thisViewModel.thisPath?.startTime?.substring(3, 5)?.toInt()!!
+            var hours = MainActivity.thisViewModel.thisPath?.endTime?.substring(0, 2)?.toInt()!! -
+                    MainActivity.thisViewModel.thisPath?.startTime?.substring(0, 2)?.toInt()!!
+            if(seconds < 0){
+                seconds += 60
+                minuites--
+            }
+            if(minuites < 0){
+                minuites += 60
+                hours--
+            }
             Text(stringResource(R.string.date_label) + " " + (MainActivity.thisViewModel.thisPath?.date ?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.Start, fontSize = FONT_SIZE)
-            Text(stringResource(R.string.time_label) + " " + (String.format("%02d", (MainActivity.thisViewModel.thisPath?.endTime?.substring(0, 2)?.toInt()!! -
-            MainActivity.thisViewModel.thisPath?.startTime?.substring(0, 2)?.toInt()!!)) + ":" +
-                    String.format("%02d",MainActivity.thisViewModel.thisPath?.endTime?.substring(3, 5)?.toInt()!! -
-            MainActivity.thisViewModel.thisPath?.startTime?.substring(3, 5)?.toInt()!!) + ":" +
-                    String.format("%02d", MainActivity.thisViewModel.thisPath?.endTime?.substring(6, 8)?.toInt()!! -
-            MainActivity.thisViewModel.thisPath?.startTime?.substring(6, 8)?.toInt()!!) ?: " "),
+            Text(stringResource(R.string.time_label) + " " +
+                    String.format("%02d", hours) + ":" +
+                    String.format("%02d", minuites) + ":" +
+                    String.format("%02d",  seconds),
                 Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -77,6 +89,20 @@ fun RouteDetailsScreen(navController: NavController, mainActivity : MainActivity
                                 MainActivity.thisViewModel.thisPath?.startTime?.substring(6, 8)?.toInt()!!))) + "ft/s"
                 ?: " "),
                 Modifier.weight(0.5F), textAlign = TextAlign.End, fontSize = FONT_SIZE)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            modifier = Modifier.fillMaxWidth() .padding(8.dp),
+            enabled = true,
+            onClick =
+            {
+                navController.navigate("home_screen");
+            }
+        ){
+            Text("New Route", textAlign = TextAlign.Center)
+            //}
         }
     }
 }
